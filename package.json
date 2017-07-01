@@ -1,0 +1,23 @@
+{
+  "name": "tcp-client-server",
+  "version": "1.0.0",
+  "description": "A sample TCP Client server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbrahamArun/tcp-client-server.git"
+  },
+  "author": "Arun Abraham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AbrahamArun/tcp-client-server/issues"
+  },
+  "homepage": "https://github.com/AbrahamArun/tcp-client-server#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "readline-sync": "^1.4.7"
+  }
+}
