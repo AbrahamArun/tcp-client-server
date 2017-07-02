@@ -4,7 +4,7 @@ const colors = require("colors");
 const server = net.createServer((c) => {
   console.log('client connected'.green);
   c.on('end', () => {
-    console.log('client disconnected');
+    console.log(colors.red('client disconnected'));
   });
 
   c.on('data', (data) => {

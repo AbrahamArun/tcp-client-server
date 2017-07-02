@@ -1,4 +1,3 @@
-process.nextTick = require('process.nexttick')
 const colors = require("colors");
 const net = require('net');
 
@@ -9,7 +8,7 @@ const client = net.createConnection({ port: 8124 }, () => {
 });
 
 client.on('data', (data) => {
-  console.log(colors.blue('received => ' + data.toString()));
+  console.log('received => ' + colors.blue(data.toString()));
 });
 
 client.on('end', () => {
@@ -35,13 +34,13 @@ function closeConnection() {
 function getUserInput() {
   let data = readlinesync.question(colors.blue("\nEnter data to send: "));
   sendData(data);
-  // set a timeout to skip this iteration so that node can process incoming message
+  // Defer the execution so that node can process incoming message
   setTimeout(() => {
     getUserInput();
-  }, 100);
+  }, 10);
 }
 
 // Defer the execution
-process.nextTick(() => {
+setTimeout(() => {
   getUserInput();
-});
+}, 10);
