@@ -32,16 +32,16 @@ function closeConnection() {
   }
 }
 
-function menu() {
+function getUserInput() {
   var data = readlinesync.question(colors.blue("\nEnter data to send: "));
   sendData(data);
   // set a timeout to skip this iteration so that node can process incoming message
   setTimeout(() => {
-    menu();
+    getUserInput();
   }, 100);
 }
 
 // Defer the execution
 process.nextTick(() => {
-  menu();
+  getUserInput();
 });
