@@ -1,31 +1,25 @@
-var net = require("net");
+const net = require('net');
 var colors = require("colors");
 
-var server = net.createServer();
+const server = net.createServer((c) => {
+  console.log('client connected'.green);
+  c.on('end', () => {
+    console.log('client disconnected');
+  });
 
-server.on("connection", function (socket) {
-    var remoteAdd = socket.remoteAddress + ":" + socket.remotePort;
-    console.log("new client conn is made %s".green, remoteAdd);
-
-    socket.on("data", function (d) {
-        console.log("data made from %s: %s".cyan, remoteAdd, d);
-        socket.write("Hello " + d);
+  c.on('data', (data) => {
+    var returnData = 'Got this message in server: ' + data;
+    c.write(returnData, "UTF8", () => {
+      console.log('sent => ' + colors.blue(returnData));
     });
+  });
 
-    socket.once("close", function () {
-        console.log("connection from %s closed".yellow, remoteAdd);
-    });
+});
 
-    socket.on("error", function (err) {
-        console.log("connection %s error: %s".red, remoteAdd, err.message);
-    });
+server.on('error', (err) => {
+  throw err;
+});
 
-})
-
-server.on("error", function (err) {
-    console.log("error occured: %s".red, err.message);
-})
-
-server.listen(9000, function () {
-    console.log("server listening to %j".green, server.address());
+server.listen(8124, () => {
+  console.log('server bound'.yellow);
 });

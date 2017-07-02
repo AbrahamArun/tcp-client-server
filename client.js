@@ -1,90 +1,47 @@
-var readlinesync = require("readline-sync");
+process.nextTick = require('process.nexttick')
 var colors = require("colors");
-var net = require("net");
 
-var HOST = "127.0.0.1";
-var PORT = 9000;
+const net = require('net');
+var readlinesync = require("readline-sync");
 
-var client = null;
+const client = net.createConnection({ port: 8124 }, () => {
+  console.log('connected to server!');
+});
 
-function OpenConnection() {
-  if (client) {
-    menu();
-    return;
-  }
+client.on('data', (data) => {
+  console.log(colors.blue('received => ' + data.toString()));
+});
 
-  client = new net.Socket();
+client.on('end', () => {
+  console.log('disconnected from server');
+});
 
-  client.on("error", function (err) {
-      client.destroy();
-      client = null;
-      console.log("-- inside openConnection.client.on.error -- ".grey);
-      menu();
-  });
+client.on('error', () => {
+  console.log('Error in connecting to server');
+});
 
-  client.on("data", function (data) {
-      console.log("Received. Msg: %s".cyan, data);
-      menu();
-  });
-
-  client.connect(PORT, HOST, function () {
-      console.log("connection opened sucessfully".green);
-      menu();
+function sendData(data) {
+  client.write(data, "UTF8", () => {
+    console.log('message has been sent');
   });
 }
 
-function SendData(data) {
-    if (!client) {
-      console.log("-- inside sendData.!client -- ".grey);
-      menu();
-      return;
-    }
-
-    client.write(data,"UTF8", function () {
-        console.log("-- data has been sent --".green);
-    });
-
-    console.log("-- inside sendData.end -- ".grey);
-    menu();
-}
-
-function CloseConnection() {
-  if (!client) {
-    menu();
-    return;
+function closeConnection() {
+  if(client !== null) {
+    client.end();
   }
-
-  client.destroy();
-  client = null;
-  console.log("-- connection closed sucessfully --".yellow);
-  menu();
 }
 
 function menu() {
-  var lineRead = readlinesync.question("\n\nEnter Option (1-Open, 2-Send, 3-Close, 4-Quit): ");
-
-  switch (lineRead) {
-    case "1":
-      console.log("Option 1 Selected");
-      OpenConnection();
-      break;
-    case "2":
-      console.log("Option 2 Selected");
-      var data = readlinesync.question("Enter data to send: ");
-      SendData(data);
-      break;
-    case "3":
-      console.log("Option 3 Selected");
-      CloseConnection();
-      break;
-    case "4":
-      console.log("Option 4 Selected");
-      return;
-      //break;
-    default:
-      menu();
-      break;
-  }
+  var data = readlinesync.question(colors.blue("\nEnter data to send: "));
+  sendData(data);
+  // set a timeout to skip this iteration so that node can process incoming message
+  setTimeout(() => {
+    menu();
+  }, 100);
 }
 
-menu();
+// Defer the execution
+process.nextTick(() => {
+  menu();
+});
