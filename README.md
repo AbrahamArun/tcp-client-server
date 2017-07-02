@@ -2,7 +2,7 @@
 TCP Client Server example
 
 # Pre-requisites
-Ensure that node is installed
+Ensure that node (tested in v7.10.0) is installed.
 
 # How to run this?
 1. Clone the repo `git clone https://github.com/AbrahamArun/tcp-client-server.git`
